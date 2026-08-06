@@ -6,6 +6,11 @@ import json
 import pprint
 from bs4 import BeautifulSoup
 from app.schemas.news import NewsArticle
+from loguru import logger
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
+
+IST = ZoneInfo("Asia/Kolkata")
 
 
 class PSUConnectScraper(BaseScraper):
@@ -48,29 +53,33 @@ class PSUConnectScraper(BaseScraper):
             # pprint.pp(articles_data[0])
             # return []
 
+            cutoff = datetime(2026, 6, 20, tzinfo=timezone.utc)
+            page_has_recent = False
+
             for item in articles_data:
                 publish_date = datetime.fromisoformat(
                     item["date"].replace("Z", "+00:00")
-                )
+                ).astimezone(IST)
 
-            if publish_date < datetime(2026, 6, 20, tzinfo=timezone.utc):
-                return articles
+                if publish_date >= cutoff:
+                    page_has_recent = True
 
-            # article = {
-            #     "id": item["id"],
-            #     "headline": item["title"],
-            #     "url": f"https://www.psuconnect.in/bank-news/{item['urltitle'].replace(' ', '-')}",
-            #     "publish_date": publish_date,
-            #     "publisher": item.get("publisher"),
-            #     "author": item.get("auther"),  # API typo
-            #     "shortdesc": item.get("shortdesc"),
-            #     "image": item.get("image"),
-            # }
+                # if publish_date < datetime(2026, 6, 20, tzinfo=timezone.utc):
+                #     logger.info("Reached cutoff date. Stopping scraper.")
+                #     return articles
 
-            # articles.append(article)
+                # article = {
+                #     "id": item["id"],
+                #     "headline": item["title"],
+                #     "url": f"https://www.psuconnect.in/bank-news/{item['urltitle'].replace(' ', '-')}",
+                #     "publish_date": publish_date,
+                #     "publisher": item.get("publisher"),
+                #     "author": item.get("auther"),  # API typo
+                #     "shortdesc": item.get("shortdesc"),
+                #     "image": item.get("image"),
+                # }
 
-            articles.append(
-                NewsArticle(
+                article = NewsArticle(
                     source="PSU Connect",
                     headline=item["title"],
                     url=f"https://www.psuconnect.in/bank-news/{item['urltitle'].replace(' ', '-')}",
@@ -81,7 +90,17 @@ class PSUConnectScraper(BaseScraper):
                     image=item.get("image"),
                     external_id=item["id"],
                 )
-            )
+
+                articles.append(article)
+
+            logger.info(f"Fetching offset={offset}")
+            logger.info(f"Returned {len(articles_data)} articles")
+            # print(article.headline)
+            # print(article.publish_date)
+
+            if not page_has_recent:
+                logger.info("Reached cutoff date.")
+                break
 
             offset += limit
 
@@ -89,7 +108,7 @@ class PSUConnectScraper(BaseScraper):
 
     def fetch_article_content(self, article):
 
-        response = get(article["url"])
+        response = get(article.url)
 
         soup = BeautifulSoup(response.text, "lxml")
 
@@ -97,7 +116,7 @@ class PSUConnectScraper(BaseScraper):
         for tag in soup(["script", "style", "noscript"]):
             tag.decompose()
 
-        # print(article["url"])
+        # print(article.url)
         # print(soup.title)
         # print(soup.prettify()[:])
 
