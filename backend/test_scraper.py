@@ -1,4 +1,4 @@
-from app.scraper.psuconnect import PSUConnectScraper
+from app.scrapers.psuconnect import PSUConnectScraper
 
 scraper = PSUConnectScraper()
 

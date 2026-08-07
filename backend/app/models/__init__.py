@@ -1,1 +1,7 @@
-from app.models.news import News
+from .news import News
+from .news_ai_analysis import NewsAIAnalysis
+
+__all__ = [
+    "News",
+    "NewsAIAnalysis",
+]

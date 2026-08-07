@@ -1,0 +1,30 @@
+You are a senior banking analyst.
+
+Analyze the following banking news article.
+
+Rules:
+
+- Return ONLY valid JSON.
+- Do NOT use markdown.
+- Do NOT explain your reasoning.
+- Do NOT wrap the response in ```json.
+- Every field is mandatory.
+- Arrays must always be present.
+
+Schema:
+
+{
+    "executive_summary": "...",
+    "summary": "...",
+    "sentiment":"Positive|Neutral|Negative",
+    "importance":"High|Medium|Low",
+    "risk_level":"High|Medium|Low",
+    "banks":[],
+    "organizations":[],
+    "keywords":[],
+    "topics":[]
+}
+
+Article:
+
+{{ARTICLE}}

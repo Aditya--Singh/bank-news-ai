@@ -1,4 +1,5 @@
 from sqlalchemy import Column, DateTime, Integer, String, Text
+from sqlalchemy.orm import relationship
 
 from app.database.database import Base
 
@@ -6,28 +7,30 @@ from app.database.database import Base
 class News(Base):
     __tablename__ = "news"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True)
+
+    external_id = Column(Integer, unique=True, index=True)
 
     source = Column(String(100), nullable=False)
 
     headline = Column(Text, nullable=False)
 
-    url = Column(String(500), unique=True, nullable=False, index=True)
+    url = Column(String(500), unique=True, nullable=False)
 
     publish_date = Column(DateTime, nullable=False)
 
-    author = Column(String(200), nullable=True)
+    author = Column(String(200))
 
-    publisher = Column(String(200), nullable=True)
+    publisher = Column(String(200))
 
-    summary = Column(Text, nullable=True)
+    category = Column(String(100))
 
     content = Column(Text, nullable=False)
 
-    category = Column(String(100), nullable=True)
+    scraped_at = Column(DateTime)
 
-    sentiment = Column(String(50), nullable=True)
-
-    risk = Column(String(50), nullable=True)
-
-    created_at = Column(DateTime)
+    analyses = relationship(
+        "NewsAIAnalysis",
+        back_populates="news",
+        cascade="all, delete-orphan",
+    )

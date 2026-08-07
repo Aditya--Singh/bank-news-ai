@@ -4,28 +4,26 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    APP_NAME: str
-    ENV: str
-    HOST: str
-    PORT: int
-
-    DATABASE_URL: str
-
-    LOG_LEVEL: str
-
-    OLLAMA_URL: str
-    LLM_MODEL: str
-    EMBEDDING_MODEL: str
-
     model_config = SettingsConfigDict(
         env_file=".env",
-        case_sensitive=True,
+        extra="ignore",
     )
+
+    database_url: str = "sqlite:///news.db"
+
+    ollama_base_url: str = "http://localhost:11434"
+
+    ollama_model: str = "qwen3:8b"
+
+    timezone: str = "Asia/Kolkata"
+
+    news_cutoff_date: str = "2026-06-20"
 
 
 @lru_cache
-def get_settings():
+def get_settings() -> Settings:
     return Settings()
 
 
+# Singleton instance
 settings = get_settings()

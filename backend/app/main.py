@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 
 import app.models
-from app.config.settings import settings
+from app.config.settings import get_settings
 from app.database.database import Base, engine
+
+settings = get_settings()
 
 app = FastAPI(
     title=settings.APP_NAME,
