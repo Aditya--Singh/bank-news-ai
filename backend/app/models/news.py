@@ -29,6 +29,12 @@ class News(Base):
 
     scraped_at = Column(DateTime)
 
+    ai_status = Column(
+        String(20),
+        nullable=False,
+        default="pending",
+    )
+
     analyses = relationship(
         "NewsAIAnalysis",
         back_populates="news",
