@@ -32,3 +32,18 @@ class NewsRepository:
         self.db.refresh(news)
 
         return news
+
+    def get_pending_ai(self):
+
+        return self.db.query(News).filter(News.ai_status == "pending").all()
+
+    def update_ai_status(
+        self,
+        news_id: int,
+        status: str,
+    ):
+        article = self.db.get(News, news_id)
+
+        article.ai_status = status
+
+        self.db.commit()

@@ -1,33 +1,60 @@
-import json
-from loguru import logger
-from app.llm.prompt_manager import PromptManager
-from app.llm.providers.base import BaseLLMProvider
-from app.schemas.ai_result import AIResult
-from app.utils.json_utils import extract_json
+from app.ai.processor import AIProcessor
+from app.database.database import SessionLocal
+from app.repositories.news_ai_repository import NewsAIRepository
+from app.repositories.news_repository import NewsRepository
+from app.config.settings import get_settings
+
+settings = get_settings()
 
 
 class AIService:
-    def __init__(self, provider: BaseLLMProvider):
-        self.provider = provider
-        self.prompts = PromptManager()
+    def run(self):
 
-    def summarize(self, article: str) -> AIResult:
+        db = SessionLocal()
 
-        logger.info("Generating AI summary...")
+        news_repo = NewsRepository(db)
+        ai_repo = NewsAIRepository(db)
 
-        prompt = self.prompts.load("executive_summary.txt")
+        processor = AIProcessor()
 
-        prompt = prompt.replace(
-            "{{ARTICLE}}",
-            article,
-        )
+        articles = news_repo.get_pending_ai()
 
-        response = self.provider.generate_with_retry(prompt)
+        print(f"{len(articles)} articles pending")
 
-        logger.info("AI summary generated successfully.")
+        for article in articles:
+            news_repo.update_ai_status(
+                article.id,
+                "processing",
+            )
 
-        data = extract_json(response)
+            try:
+                analysis, ms = processor.process(
+                    article.headline,
+                    article.content,
+                )
 
-        logger.exception("Invalid JSON received from model.")
+                ai_repo.save(
+                    news_id=article.id,
+                    analysis=analysis,
+                    processing_time_ms=ms,
+                    model_provider="ollama",
+                    model_name=settings.ollama_model,
+                )
 
-        return AIResult.model_validate(data)
+                news_repo.update_ai_status(
+                    article.id,
+                    "completed",
+                )
+
+                print(f"✓ {article.headline}")
+
+            except Exception as e:
+                db.rollback()
+                news_repo.update_ai_status(
+                    article.id,
+                    "failed",
+                )
+
+                print(e)
+
+        db.close()

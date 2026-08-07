@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 
-from app.scraper.base import BaseScraper
-from app.scraper.utils import get
+from app.scrapers.base import BaseScraper
+from app.scrapers.utils import get
 import json
 import pprint
 from bs4 import BeautifulSoup

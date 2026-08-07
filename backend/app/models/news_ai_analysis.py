@@ -30,7 +30,7 @@ class NewsAIAnalysis(Base):
 
     prompt_version = Column(String(20), nullable=False)
 
-    executive_summary = Column(Text)
+    executive_summary = Column(JSON)
 
     summary = Column(Text)
 

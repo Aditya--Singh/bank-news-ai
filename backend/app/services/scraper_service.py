@@ -2,7 +2,7 @@ from loguru import logger
 
 from app.database.database import SessionLocal
 from app.repositories.news_repository import NewsRepository
-from app.scraper.psuconnect import PSUConnectScraper
+from app.scrapers.psuconnect import PSUConnectScraper
 
 
 class ScraperService:

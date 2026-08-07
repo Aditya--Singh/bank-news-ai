@@ -1,15 +1,20 @@
-from app.llm.providers.ollama import OllamaProvider
-from app.services.ai_service import AIService
+from app.ai.processor import AIProcessor
 
-article = """
-State Bank of India has reported a 14% increase in quarterly profit
-driven by lower provisions and strong loan growth.
-"""
+processor = AIProcessor()
 
-provider = OllamaProvider()
+analysis, ms = processor.process(
+    headline="RBI cuts repo rate",
+    content="""
+Reserve Bank of India reduced the repo rate by 25 basis points.
 
-service = AIService(provider)
+Banks are expected to lower lending rates.
+""",
+)
 
-result = service.summarize(article)
+print()
 
-print(result.model_dump_json(indent=4))
+print(analysis)
+
+print()
+
+print(ms)
