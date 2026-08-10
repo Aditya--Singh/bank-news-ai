@@ -1,23 +1,32 @@
-.venv/
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
 
+# Environment
 .env
+.env.*
+!.env.example
 
-news.db
+# SQLite / local databases
+*.db
+*.sqlite
+*.sqlite3
 
-.vscode/*.log
-
+# Node
 node_modules/
-
 dist/
 
-build/
-
-.coverage
-
-.pytest_cache/
-
+# IDE
+.vscode/
 .idea/
 
+# OS
 .DS_Store
+Thumbs.db
+
+# Logs
+*.log
