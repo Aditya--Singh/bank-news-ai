@@ -508,3 +508,74 @@ body {
 .news-card.news-card-high-importance {
   border-left: 5px solid #d97706;
 }
+
+.admin-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  padding: 6px;
+  border-radius: 10px;
+}
+
+.admin-tab {
+  border: none;
+  padding: 12px 22px;
+  border-radius: 7px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.admin-tab:hover {
+  opacity: 0.85;
+}
+
+.admin-tab.active {
+  font-weight: 700;
+}
+
+.application-insights {
+  min-height: 400px;
+}
+
+.insights-placeholder {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.application-insights {
+  overflow: hidden;
+}
+
+.insights-table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.insights-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.insights-table th,
+.insights-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.insights-table th {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.insights-table td {
+  white-space: nowrap;
+}
+
+.insights-table tbody tr:hover {
+  background: rgba(0, 0, 0, 0.03);
+}

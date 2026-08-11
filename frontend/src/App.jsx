@@ -1,3 +1,4 @@
+import Login from "./pages/Login";
 import { useEffect, useRef, useState } from "react";
 
 import {
@@ -20,11 +21,15 @@ import NewsCard from "./components/NewsCard";
 
 import NewsFilters from "./components/NewsFilters";
 
+import ApplicationInsights from "./components/ApplicationInsights";
+
 function App() {
+  const [user, setUser] = useState(null);
   const [summary, setSummary] = useState(null);
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [adminTab, setAdminTab] = useState("backend-summary");
   const [topBanks, setTopBanks] = useState([]);
   const [topTopics, setTopTopics] = useState([]);
   const [filters, setFilters] = useState({
@@ -113,6 +118,10 @@ function App() {
     loadNews();
   }, [currentPage, pageSize, filters]);
 
+  if (!user) {
+    return <Login onLogin={setUser} />;
+  }
+
   if (loading) {
     return <div className="loading">Loading Bank News Intelligence...</div>;
   }
@@ -139,8 +148,10 @@ function App() {
     <div className="app">
       <header className="header">
         <div>
-          <h1>Bank News Intelligence</h1>
-          <p>Executive News &amp; Risk Dashboard</p>
+          {/* <h1>Bank News Intelligence</h1>
+          <p>Executive News &amp; Risk Dashboard</p> */}
+          <h1>AI-Enabled Top Management Decision Support Platform</h1>
+          <p>Insights from External Sources</p>
         </div>
 
         <div className="header-date">
@@ -153,124 +164,184 @@ function App() {
       </header>
 
       <main className="dashboard">
-        <section className="kpi-grid">
-          <KpiCard
-            title="Total News"
-            value={summary?.total_articles ?? 0}
-            subtitle="Articles monitored"
-          />
 
-          <KpiCard
-            title="High Importance"
-            value={highImportance}
-            subtitle="Requires attention"
-          />
+        {user.role === "admin" && (
+          <div className="admin-tabs">
+            <button
+              type="button"
+              className={
+                adminTab === "backend-summary"
+                  ? "admin-tab active"
+                  : "admin-tab"
+              }
+              onClick={() => setAdminTab("backend-summary")}
+            >
+              Backend Summary
+            </button>
 
-          <KpiCard
-            title="High Risk"
-            value={highRisk}
-            subtitle="Risk flagged"
-          />
+            <button
+              type="button"
+              className={
+                adminTab === "latest-news"
+                  ? "admin-tab active"
+                  : "admin-tab"
+              }
+              onClick={() => setAdminTab("latest-news")}
+            >
+              Latest News
+            </button>
 
-          <KpiCard
-            title="Negative Sentiment"
-            value={negativeSentiment}
-            subtitle="Negative developments"
-          />
-        </section>
-
-        <section className="chart-grid">
-          <div className="panel chart-panel">
-            <h2>Sentiment</h2>
-            <SentimentChart data={summary?.sentiment} />
+            <button
+              type="button"
+              className={
+                adminTab === "application-insights"
+                  ? "admin-tab active"
+                  : "admin-tab"
+              }
+              onClick={() =>
+                setAdminTab("application-insights")
+              }
+            >
+              Application Insights
+            </button>
           </div>
+        )}
 
-          <div className="panel chart-panel">
-            <h2>Importance</h2>
-            <DistributionBarChart
-              data={summary?.importance}
-            />
-          </div>
+        {user.role === "admin" &&
+          adminTab === "backend-summary" && (
 
-          <div className="panel chart-panel">
-            <h2>Risk</h2>
-            <DistributionBarChart
-              data={summary?.risk}
-            />
-          </div>
-        </section>
+            <>
+              <section className="kpi-grid">
+                <KpiCard
+                  title="Total News"
+                  value={summary?.total_articles ?? 0}
+                  subtitle="Articles monitored"
+                />
 
-        <section className="ranking-grid">
-          <div className="panel">
-            <h2>Top Banks</h2>
-            <RankingBarChart data={topBanks} />
-          </div>
+                <KpiCard
+                  title="High Importance"
+                  value={highImportance}
+                  subtitle="Requires attention"
+                />
 
-          <div className="panel">
-            <h2>Top Topics</h2>
-            <RankingBarChart data={topTopics} />
-          </div>
-        </section>
+                <KpiCard
+                  title="High Risk"
+                  value={highRisk}
+                  subtitle="Risk flagged"
+                />
 
-        <section ref={newsSectionRef} className="panel news-panel">
-          <div className="section-header">
-            <div>
-              <h2>Latest News</h2>
-              <p>AI-prioritized business and banking intelligence</p>
-            </div>
+                <KpiCard
+                  title="Negative Sentiment"
+                  value={negativeSentiment}
+                  subtitle="Negative developments"
+                />
+              </section>
 
-            <span className="news-count">
-              {news.length} articles
-            </span>
-          </div>
+              <section className="chart-grid">
+                <div className="panel chart-panel">
+                  <h2>Sentiment</h2>
+                  <SentimentChart data={summary?.sentiment} />
+                </div>
 
-          <NewsFilters
-            filters={filters}
-            onChange={handleFiltersChange}
-            onClear={handleClearFilters}
-          />
+                <div className="panel chart-panel">
+                  <h2>Importance</h2>
+                  <DistributionBarChart
+                    data={summary?.importance}
+                  />
+                </div>
 
-          <div className="news-list">
-            {news.map((article) => (
-              <NewsCard
-                key={article.id}
-                article={article}
+                <div className="panel chart-panel">
+                  <h2>Risk</h2>
+                  <DistributionBarChart
+                    data={summary?.risk}
+                  />
+                </div>
+              </section>
+
+              <section className="ranking-grid">
+                <div className="panel">
+                  <h2>Top Banks</h2>
+                  <RankingBarChart data={topBanks} />
+                </div>
+
+                <div className="panel">
+                  <h2>Top Topics</h2>
+                  <RankingBarChart data={topTopics} />
+                </div>
+              </section>
+
+            </>
+          )}
+
+
+        {(user.role === "user" ||
+          (user.role === "admin" &&
+            adminTab === "latest-news")) && (
+            <section ref={newsSectionRef} className="panel news-panel">
+              <div className="section-header">
+                <div>
+                  <h2>Latest News</h2>
+                  <p>AI-prioritized business and banking intelligence</p>
+                </div>
+
+                <span className="news-count">
+                  {news.length} articles
+                </span>
+              </div>
+
+              <NewsFilters
+                filters={filters}
+                onChange={handleFiltersChange}
+                onClear={handleClearFilters}
               />
-            ))}
-          </div>
 
-          <div className="pagination">
-            <div className="pagination-info">
-              Showing {startArticle}–{endArticle} of {totalNews} articles
-            </div>
+              <div className="news-list">
+                {news.map((article) => (
+                  <NewsCard
+                    key={article.id}
+                    article={article}
+                  />
+                ))}
+              </div>
 
-            <div className="pagination-controls">
-              <button
-                type="button"
-                disabled={currentPage === 1}
-                onClick={() =>
-                  setCurrentPage((page) => page - 1)
-                }
-              >
-                ← Previous
-              </button>
+              <div className="pagination">
+                <div className="pagination-info">
+                  Showing {startArticle}–{endArticle} of {totalNews} articles
+                </div>
 
-              <span>
-                Page {currentPage} of {totalPages || 1}
-              </span>
+                <div className="pagination-controls">
+                  <button
+                    type="button"
+                    disabled={currentPage === 1}
+                    onClick={() =>
+                      setCurrentPage((page) => page - 1)
+                    }
+                  >
+                    ← Previous
+                  </button>
 
-              <button
-                type="button"
-                disabled={currentPage >= totalPages}
-                onClick={() =>
-                  setCurrentPage((page) => page + 1)
-                }
-              >
-                Next →
-              </button>
-            </div>
-          </div>
-        </section>
+                  <span>
+                    Page {currentPage} of {totalPages || 1}
+                  </span>
+
+                  <button
+                    type="button"
+                    disabled={currentPage >= totalPages}
+                    onClick={() =>
+                      setCurrentPage((page) => page + 1)
+                    }
+                  >
+                    Next →
+                  </button>
+                </div>
+              </div>
+            </section>
+          )}
+
+        {user.role === "admin" &&
+          adminTab === "application-insights" && (
+            <ApplicationInsights />
+          )}
       </main>
     </div>
   );
