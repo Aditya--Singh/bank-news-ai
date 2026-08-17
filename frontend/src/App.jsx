@@ -1,3 +1,5 @@
+import { submitFeedback } from "./api/feedback";
+import FeedbackModal from "./components/FeedbackModal";
 import Login from "./pages/Login";
 import { useEffect, useRef, useState } from "react";
 
@@ -29,6 +31,7 @@ function App() {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showFeedback, setShowFeedback] = useState(false);
   const [adminTab, setAdminTab] = useState("backend-summary");
   const [topBanks, setTopBanks] = useState([]);
   const [topTopics, setTopTopics] = useState([]);
@@ -154,12 +157,22 @@ function App() {
           <p>Insights from External Sources</p>
         </div>
 
-        <div className="header-date">
-          {new Date().toLocaleDateString("en-IN", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-          })}
+        <div className="header-actions">
+          <button
+            type="button"
+            className="feedback-header-button"
+            onClick={() => setShowFeedback(true)}
+          >
+            Give Feedback
+          </button>
+
+          <div className="header-date">
+            {new Date().toLocaleDateString("en-IN", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })}
+          </div>
         </div>
       </header>
 
@@ -343,6 +356,26 @@ function App() {
             <ApplicationInsights />
           )}
       </main>
+      {showFeedback && (
+        <FeedbackModal
+          onClose={() => setShowFeedback(false)}
+          onSubmit={async (feedback) => {
+            try {
+              await submitFeedback({
+                username: user.username,
+                role: user.role,
+                ...feedback,
+              });
+
+              alert("Thank you for your feedback!");
+              setShowFeedback(false);
+            } catch (err) {
+              console.error("Feedback submission failed:", err);
+              alert("Unable to submit feedback. Please try again.");
+            }
+          }}
+        />
+      )}
     </div>
   );
 }

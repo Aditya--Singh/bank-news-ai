@@ -33,8 +33,8 @@ function Login({ onLogin }) {
         <div className="login-page">
             <div className="login-card">
                 <div className="login-brand">
-                    <h1>Bank News Intelligence</h1>
-                    <p>Business &amp; Banking Intelligence</p>
+                    <h1>AI-Enabled Top Management Decision Support Platform</h1>
+                    <p>Insights from External Sources</p>
                 </div>
 
                 <form onSubmit={handleSubmit}>
@@ -86,11 +86,11 @@ function Login({ onLogin }) {
                     </button>
                 </form>
 
-                <div className="demo-credentials">
+                {/* <div className="demo-credentials">
                     <strong>Demo credentials</strong>
                     <span>admin / admin123</span>
                     <span>user / user123</span>
-                </div>
+                </div> */}
             </div>
         </div>
     );

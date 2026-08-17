@@ -11,6 +11,17 @@ import {
     YAxis,
 } from "recharts";
 
+
+const PNB_RED = "#8B0000";
+const PNB_GOLD = "#F4C300";
+
+const SENTIMENT_COLORS = {
+    positive: "#287A35",
+    negative: "#B42318",
+    neutral: PNB_GOLD,
+};
+
+
 export function SentimentChart({ data }) {
     const chartData = Object.entries(data ?? {}).map(
         ([name, value]) => ({
@@ -33,9 +44,19 @@ export function SentimentChart({ data }) {
                     paddingAngle={3}
                     label
                 >
-                    {chartData.map((entry) => (
-                        <Cell key={entry.name} />
-                    ))}
+                    {chartData.map((entry) => {
+                        const color =
+                            SENTIMENT_COLORS[
+                            entry.name.toLowerCase()
+                            ] ?? PNB_RED;
+
+                        return (
+                            <Cell
+                                key={entry.name}
+                                fill={color}
+                            />
+                        );
+                    })}
                 </Pie>
 
                 <Tooltip />
@@ -43,6 +64,7 @@ export function SentimentChart({ data }) {
         </ResponsiveContainer>
     );
 }
+
 
 export function DistributionBarChart({ data }) {
     const chartData = Object.entries(data ?? {}).map(
@@ -64,26 +86,35 @@ export function DistributionBarChart({ data }) {
                     bottom: 5,
                 }}
             >
-                <CartesianGrid strokeDasharray="3 3" />
+                <CartesianGrid
+                    strokeDasharray="3 3"
+                    stroke="#E5DDD0"
+                />
 
-                <XAxis type="number" />
+                <XAxis
+                    type="number"
+                    stroke="#6B6B6B"
+                />
 
                 <YAxis
                     type="category"
                     dataKey="name"
                     width={80}
+                    stroke="#6B6B6B"
                 />
 
                 <Tooltip />
 
                 <Bar
                     dataKey="value"
+                    fill={PNB_RED}
                     radius={[0, 6, 6, 0]}
                 />
             </BarChart>
         </ResponsiveContainer>
     );
 }
+
 
 export function RankingBarChart({ data }) {
     return (
@@ -98,20 +129,28 @@ export function RankingBarChart({ data }) {
                     bottom: 5,
                 }}
             >
-                <CartesianGrid strokeDasharray="3 3" />
+                <CartesianGrid
+                    strokeDasharray="3 3"
+                    stroke="#E5DDD0"
+                />
 
-                <XAxis type="number" />
+                <XAxis
+                    type="number"
+                    stroke="#6B6B6B"
+                />
 
                 <YAxis
                     type="category"
                     dataKey="name"
                     width={140}
+                    stroke="#6B6B6B"
                 />
 
                 <Tooltip />
 
                 <Bar
                     dataKey="count"
+                    fill={PNB_GOLD}
                     radius={[0, 6, 6, 0]}
                 />
             </BarChart>

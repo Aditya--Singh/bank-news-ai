@@ -8,10 +8,9 @@ article = scraper.fetch_article_content(articles[0])
 print(f"Articles: {len(articles)}")
 
 # print(articles[0][0])
-
 # print(articles[0]["url"])
 
-print(article["headline"])
-print(article["author"])
-print(article["publish_date"])
-print(article["content"][:])
+print(article.headline)
+print(article.author)
+print(article.publish_date)
+print(article.content)

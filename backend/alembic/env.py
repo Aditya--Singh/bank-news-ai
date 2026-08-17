@@ -23,6 +23,7 @@ if config.config_file_name is not None:
 # Import all models here so Alembic can discover them
 import app.models.news
 import app.models.news_ai_analysis
+import app.models.application_feedback
 
 target_metadata = Base.metadata
 
