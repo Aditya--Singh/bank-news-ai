@@ -1,7 +1,7 @@
 const DEMO_USERS = [
     {
-        username: "admin",
-        password: "admin123",
+        username: "Admin",
+        password: "Admin@news26",
         role: "admin",
     },
     {

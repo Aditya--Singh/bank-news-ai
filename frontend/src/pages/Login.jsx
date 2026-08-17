@@ -2,6 +2,9 @@ import { useState } from "react";
 
 import DEMO_USERS from "../config/demoUsers";
 
+import pnbLogo from "../assets/pnb_logo.png";
+
+
 function Login({ onLogin }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -31,13 +34,44 @@ function Login({ onLogin }) {
 
     return (
         <div className="login-page">
+            <div className="login-background-pattern" />
+
             <div className="login-card">
+                <div className="login-accent" />
+
                 <div className="login-brand">
-                    <h1>AI-Enabled Top Management Decision Support Platform</h1>
-                    <p>Insights from External Sources</p>
+                    <div className="login-brand-mark">
+                        <div className="login-brand-mark">
+                            <img
+                                src={pnbLogo}
+                                alt="Punjab National Bank"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="login-brand-text">
+                        <strong>PUNJAB NATIONAL BANK</strong>
+                        <span>...the name you can BANK upon!</span>
+                    </div>
                 </div>
 
-                <form onSubmit={handleSubmit}>
+                <div className="login-heading">
+                    <h1>
+                        AI-Enabled Top Management
+                        Decision Support Platform
+                    </h1>
+
+                    <p>
+                        Insights from External Sources
+                    </p>
+                </div>
+
+                <div className="login-divider" />
+
+                <form
+                    className="login-form"
+                    onSubmit={handleSubmit}
+                >
                     <div className="form-group">
                         <label htmlFor="username">
                             Username
@@ -50,8 +84,9 @@ function Login({ onLogin }) {
                             onChange={(event) =>
                                 setUsername(event.target.value)
                             }
-                            placeholder="Enter username"
+                            placeholder="Enter your username"
                             autoComplete="username"
+                            autoFocus
                         />
                     </div>
 
@@ -67,7 +102,7 @@ function Login({ onLogin }) {
                             onChange={(event) =>
                                 setPassword(event.target.value)
                             }
-                            placeholder="Enter password"
+                            placeholder="Enter your password"
                             autoComplete="current-password"
                         />
                     </div>
@@ -82,18 +117,27 @@ function Login({ onLogin }) {
                         type="submit"
                         className="login-button"
                     >
-                        Login
+                        Sign In
                     </button>
                 </form>
 
-                {/* <div className="demo-credentials">
-                    <strong>Demo credentials</strong>
-                    <span>admin / admin123</span>
-                    <span>user / user123</span>
-                </div> */}
+                <div className="login-footer">
+                    <span>
+                        Business &amp; Banking Intelligence
+                    </span>
+
+                    <span className="login-footer-dot">
+                        •
+                    </span>
+
+                    <span>
+                        AI Powered
+                    </span>
+                </div>
             </div>
         </div>
     );
 }
+
 
 export default Login;

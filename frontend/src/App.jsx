@@ -68,6 +68,12 @@ function App() {
 
   const newsSectionRef = useRef(null);
 
+  const handleLogout = () => {
+    setUser(null);
+    setShowFeedback(false);
+    setAdminTab("backend-summary");
+  };
+
 
   useEffect(() => {
     const loadDashboard = async () => {
@@ -158,6 +164,22 @@ function App() {
         </div>
 
         <div className="header-actions">
+          <div className="header-user">
+            <div className="header-user-avatar">
+              {user.username.charAt(0).toUpperCase()}
+            </div>
+
+            <div className="header-user-info">
+              <span className="header-user-greeting">
+                Welcome
+              </span>
+
+              <strong>
+                {user.username}
+              </strong>
+            </div>
+          </div>
+
           <button
             type="button"
             className="feedback-header-button"
@@ -173,6 +195,14 @@ function App() {
               year: "numeric",
             })}
           </div>
+
+          <button
+            type="button"
+            className="logout-button"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
         </div>
       </header>
 

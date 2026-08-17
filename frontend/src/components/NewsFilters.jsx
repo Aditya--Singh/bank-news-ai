@@ -31,7 +31,7 @@ function NewsFilters({ filters, onChange, onClear }) {
 
             <input
                 type="text"
-                placeholder="Bank"
+                placeholder="Search bank"
                 value={filters.bank}
                 onChange={(event) =>
                     updateFilter("bank", event.target.value)
