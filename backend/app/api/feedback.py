@@ -2,10 +2,11 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
+from app.auth.dependencies import get_current_user, require_admin
 from app.database.database import get_db
 from app.models.application_feedback import ApplicationFeedback
+from app.models.user import User
 from app.schemas.feedback import FeedbackCreate
-
 
 router = APIRouter(
     prefix="/api/feedback",
@@ -20,10 +21,11 @@ router = APIRouter(
 def create_feedback(
     feedback: FeedbackCreate,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     record = ApplicationFeedback(
-        username=feedback.username,
-        role=feedback.role,
+        username=current_user.username,
+        role=current_user.role,
         relevance=feedback.relevance,
         accuracy=feedback.accuracy,
         usefulness=feedback.usefulness,
@@ -45,6 +47,7 @@ def create_feedback(
 @router.get("/monthly")
 def get_monthly_feedback(
     db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin),
 ):
     results = (
         db.query(

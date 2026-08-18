@@ -7,7 +7,8 @@ from sqlalchemy.orm import Session
 from app.database.database import get_db
 from app.models.news import News
 from app.models.news_ai_analysis import NewsAIAnalysis
-
+from app.auth.dependencies import get_current_user
+from app.models.user import User
 
 router = APIRouter(prefix="/api/news", tags=["News"])
 
@@ -22,6 +23,7 @@ def get_news(
     risk_level: str | None = None,
     bank: str | None = None,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     # ---------------------------------------------------------
     # Latest AI analysis per article

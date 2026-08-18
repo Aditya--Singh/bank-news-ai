@@ -11,7 +11,7 @@ settings = get_settings()
 from app.api.news import router as news_router
 from app.api.dashboard import router as dashboard_router
 from app.api.feedback import router as feedback_router
-
+from app.api.auth import router as auth_router
 
 app = FastAPI(
     title="Bank News AI",
@@ -32,7 +32,7 @@ app.add_middleware(
 app.include_router(news_router)
 app.include_router(dashboard_router)
 app.include_router(feedback_router)
-
+app.include_router(auth_router)
 
 Base.metadata.create_all(bind=engine)
 

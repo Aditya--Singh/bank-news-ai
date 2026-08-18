@@ -19,6 +19,10 @@ class Settings(BaseSettings):
 
     news_cutoff_date: str = "2026-06-20"
 
+    jwt_secret_key: str
+    jwt_algorithm: str = "HS256"
+    jwt_expiration_minutes: int = 480
+
 
 @lru_cache
 def get_settings() -> Settings:

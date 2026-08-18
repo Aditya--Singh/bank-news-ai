@@ -26,7 +26,15 @@ import NewsFilters from "./components/NewsFilters";
 import ApplicationInsights from "./components/ApplicationInsights";
 
 function App() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    try {
+      return JSON.parse(
+        localStorage.getItem("bankNewsUser") || "null"
+      );
+    } catch {
+      return null;
+    }
+  });
   const [summary, setSummary] = useState(null);
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -69,9 +77,20 @@ function App() {
   const newsSectionRef = useRef(null);
 
   const handleLogout = () => {
+    localStorage.removeItem("bankNewsUser");
+
     setUser(null);
     setShowFeedback(false);
     setAdminTab("backend-summary");
+  };
+
+  const handleLogin = (loggedInUser) => {
+    localStorage.setItem(
+      "bankNewsUser",
+      JSON.stringify(loggedInUser),
+    );
+
+    setUser(loggedInUser);
   };
 
 
@@ -128,7 +147,7 @@ function App() {
   }, [currentPage, pageSize, filters]);
 
   if (!user) {
-    return <Login onLogin={setUser} />;
+    return <Login onLogin={handleLogin} />;
   }
 
   if (loading) {

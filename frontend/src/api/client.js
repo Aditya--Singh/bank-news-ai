@@ -7,4 +7,20 @@ const apiClient = axios.create({
     },
 });
 
+apiClient.interceptors.request.use(
+    (config) => {
+        const user = JSON.parse(
+            localStorage.getItem("bankNewsUser") || "null"
+        );
+
+        if (user?.accessToken) {
+            config.headers.Authorization =
+                `Bearer ${user.accessToken}`;
+        }
+
+        return config;
+    },
+    (error) => Promise.reject(error),
+);
+
 export default apiClient;

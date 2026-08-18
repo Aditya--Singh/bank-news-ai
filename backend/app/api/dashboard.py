@@ -8,6 +8,9 @@ from app.database.database import get_db
 from app.models.news import News
 from app.models.news_ai_analysis import NewsAIAnalysis
 
+from app.auth.dependencies import get_current_user
+from app.models.user import User
+
 router = APIRouter(
     prefix="/api/dashboard",
     tags=["Dashboard"],
@@ -58,7 +61,7 @@ def json_value_counts(db: Session, column):
 
 @router.get("/summary")
 def get_dashboard_summary(
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db), current_user: User = Depends(get_current_user)
 ):
     total_articles = db.query(func.count(News.id)).scalar()
 
@@ -91,6 +94,7 @@ def get_dashboard_summary(
 @router.get("/top-banks")
 def get_top_banks(
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     counts = json_value_counts(
         db,
@@ -111,6 +115,7 @@ def get_top_banks(
 @router.get("/top-topics")
 def get_top_topics(
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     counts = json_value_counts(
         db,
@@ -131,6 +136,7 @@ def get_top_topics(
 @router.get("/stats")
 def get_dashboard_stats(
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     total_news = db.query(func.count(News.id)).scalar() or 0
 

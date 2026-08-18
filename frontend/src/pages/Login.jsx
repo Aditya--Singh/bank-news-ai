@@ -1,36 +1,56 @@
 import { useState } from "react";
 
-import DEMO_USERS from "../config/demoUsers";
-
 import pnbLogo from "../assets/pnb_logo.png";
+import { login } from "../api/auth";
 
 
 function Login({ onLogin }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleSubmit = (event) => {
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
         setError("");
 
-        const user = DEMO_USERS.find(
-            (item) =>
-                item.username === username.trim() &&
-                item.password === password,
-        );
+        const trimmedUsername = username.trim();
 
-        if (!user) {
-            setError("Invalid username or password.");
+        if (!trimmedUsername || !password) {
+            setError("Please enter your username and password.");
             return;
         }
 
-        onLogin({
-            username: user.username,
-            role: user.role,
-        });
+        setIsLoading(true);
+
+        try {
+            const data = await login(
+                trimmedUsername,
+                password,
+            );
+
+            onLogin({
+                username: data.username,
+                role: data.role,
+                accessToken: data.access_token,
+            });
+        } catch (error) {
+            console.error("Login failed:", error);
+
+            if (error.response?.status === 401) {
+                setError("Invalid username or password.");
+            } else {
+                setError(
+                    "Unable to connect to the authentication service.",
+                );
+            }
+        } finally {
+            setIsLoading(false);
+        }
     };
+
 
     return (
         <div className="login-page">
@@ -50,8 +70,13 @@ function Login({ onLogin }) {
                     </div>
 
                     <div className="login-brand-text">
-                        <strong>PUNJAB NATIONAL BANK</strong>
-                        <span>...the name you can BANK upon!</span>
+                        <strong>
+                            PUNJAB NATIONAL BANK
+                        </strong>
+
+                        <span>
+                            ...the name you can BANK upon!
+                        </span>
                     </div>
                 </div>
 
@@ -87,6 +112,7 @@ function Login({ onLogin }) {
                             placeholder="Enter your username"
                             autoComplete="username"
                             autoFocus
+                            disabled={isLoading}
                         />
                     </div>
 
@@ -104,6 +130,7 @@ function Login({ onLogin }) {
                             }
                             placeholder="Enter your password"
                             autoComplete="current-password"
+                            disabled={isLoading}
                         />
                     </div>
 
@@ -116,8 +143,11 @@ function Login({ onLogin }) {
                     <button
                         type="submit"
                         className="login-button"
+                        disabled={isLoading}
                     >
-                        Sign In
+                        {isLoading
+                            ? "Signing In..."
+                            : "Sign In"}
                     </button>
                 </form>
 
