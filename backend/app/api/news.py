@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import and_, case, desc, func
+from sqlalchemy import and_, case, desc, func, select, exists
 from sqlalchemy.orm import Session
 
 from app.database.database import get_db
@@ -75,7 +75,17 @@ def get_news(
         query = query.filter(NewsAIAnalysis.risk_level == risk_level)
 
     if bank:
-        query = query.filter(NewsAIAnalysis.banks.contains([bank]))
+        bank_search = bank.strip().lower()
+
+        bank_values = func.json_each(NewsAIAnalysis.banks).table_valued("value")
+
+        query = query.filter(
+            exists(
+                select(1)
+                .select_from(bank_values)
+                .where(func.lower(bank_values.c.value).like(f"%{bank_search}%"))
+            )
+        )
 
     # ---------------------------------------------------------
     # Total after filters
