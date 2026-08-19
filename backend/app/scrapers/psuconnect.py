@@ -9,12 +9,18 @@ from app.schemas.news import NewsArticle
 from loguru import logger
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
+import re
 
 IST = ZoneInfo("Asia/Kolkata")
 
 
 class PSUConnectScraper(BaseScraper):
     API = "https://www.psuconnect.in/api/category"
+
+    def _build_article_url(self, urltitle: str) -> str:
+        slug = urltitle.replace("\u00a0", " ")
+        slug = re.sub(r"\s+", "-", slug.strip())
+        return f"https://www.psuconnect.in/bank-news/{slug}"
 
     def fetch_articles(self):
 
@@ -82,7 +88,8 @@ class PSUConnectScraper(BaseScraper):
                 article = NewsArticle(
                     source="PSU Connect",
                     headline=item["title"],
-                    url=f"https://www.psuconnect.in/bank-news/{item['urltitle'].replace(' ', '-')}",
+                    # url=f"https://www.psuconnect.in/bank-news/{item['urltitle'].replace(' ', '-')}",
+                    url=self._build_article_url(item["urltitle"]),
                     publish_date=publish_date,
                     publisher=item.get("publisher"),
                     author=item.get("auther"),

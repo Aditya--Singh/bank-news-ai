@@ -12,6 +12,7 @@ from app.api.news import router as news_router
 from app.api.dashboard import router as dashboard_router
 from app.api.feedback import router as feedback_router
 from app.api.auth import router as auth_router
+from app.api.pipeline import router as pipeline_router
 
 app = FastAPI(
     title="Bank News AI",
@@ -23,6 +24,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "http://127.0.0.1:5173",
+        "http://newsintel.pnbbank.in:5173",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -33,6 +35,7 @@ app.include_router(news_router)
 app.include_router(dashboard_router)
 app.include_router(feedback_router)
 app.include_router(auth_router)
+app.include_router(pipeline_router)
 
 Base.metadata.create_all(bind=engine)
 

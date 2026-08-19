@@ -24,6 +24,7 @@ import NewsCard from "./components/NewsCard";
 import NewsFilters from "./components/NewsFilters";
 
 import ApplicationInsights from "./components/ApplicationInsights";
+import NewsPipelineControl from "./components/NewsPipelineControl";
 
 function App() {
   const [user, setUser] = useState(() => {
@@ -331,6 +332,8 @@ function App() {
                   <RankingBarChart data={topTopics} />
                 </div>
               </section>
+
+              <NewsPipelineControl />
 
             </>
           )}

@@ -31,15 +31,23 @@ class ScraperService:
                     skipped += 1
                     continue
 
-                article = scraper.fetch_article_content(article)
+                try:
+                    article = scraper.fetch_article_content(article)
 
-                repository.save(article)
+                    repository.save(article)
 
-                existing_urls.add(article.url)
+                    existing_urls.add(article.url)
 
-                inserted += 1
+                    inserted += 1
 
-                logger.info(f"Inserted: {article.headline}")
+                    logger.info(f"Inserted: {article.headline}")
+
+                except Exception as e:
+                    logger.error(
+                        f"Failed to process article: "
+                        f"{article.headline} | {article.url} | {e}"
+                    )
+                    continue
 
             logger.info(f"Completed. Inserted={inserted}, Skipped={skipped}")
 

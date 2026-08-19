@@ -39,7 +39,7 @@ Sentiment:
 Positive / Neutral / Negative
 
 Importance:
-Low / Medium / High / Critical
+Low / Medium / High
 
 Risk Level:
 Low / Medium / High
