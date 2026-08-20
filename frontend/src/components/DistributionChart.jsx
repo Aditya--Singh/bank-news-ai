@@ -9,6 +9,7 @@ import {
     Tooltip,
     XAxis,
     YAxis,
+    Legend,
 } from "recharts";
 
 
@@ -146,12 +147,104 @@ export function RankingBarChart({ data }) {
                     stroke="#6B6B6B"
                 />
 
-                <Tooltip />
+                <Tooltip
+                    formatter={(value, name) => [
+                        value,
+                        `${name} News`,
+                    ]}
+                />
 
                 <Bar
                     dataKey="count"
                     fill={PNB_GOLD}
                     radius={[0, 6, 6, 0]}
+                />
+            </BarChart>
+        </ResponsiveContainer>
+    );
+}
+
+
+export function SentimentImportanceChart({ data }) {
+    if (!data || Object.keys(data).length === 0) {
+        return (
+            <div className="empty-chart">
+                No sentiment/importance data available
+            </div>
+        );
+    }
+
+    const importanceOrder = [
+        "Critical",
+        "High",
+        "Medium",
+        "Low",
+    ];
+
+    const chartData = importanceOrder
+        .filter((importance) => data[importance])
+        .map((importance) => ({
+            importance,
+            Positive:
+                data[importance]?.Positive ??
+                data[importance]?.positive ??
+                0,
+            Neutral:
+                data[importance]?.Neutral ??
+                data[importance]?.neutral ??
+                0,
+            Negative:
+                data[importance]?.Negative ??
+                data[importance]?.negative ??
+                0,
+        }));
+
+    return (
+        <ResponsiveContainer width="100%" height={280}>
+            <BarChart
+                data={chartData}
+                margin={{
+                    top: 10,
+                    right: 15,
+                    left: 0,
+                    bottom: 5,
+                }}
+            >
+                <CartesianGrid strokeDasharray="3 3" />
+
+                <XAxis
+                    dataKey="importance"
+                    tick={{ fontSize: 12 }}
+                />
+
+                <YAxis
+                    allowDecimals={false}
+                    tick={{ fontSize: 12 }}
+                />
+
+                <Tooltip />
+
+                <Legend />
+
+                <Bar
+                    dataKey="Positive"
+                    stackId="sentiment"
+                    name="Positive"
+                    fill="#2e7d32"
+                />
+
+                <Bar
+                    dataKey="Neutral"
+                    stackId="sentiment"
+                    name="Neutral"
+                    fill="#f4b400"
+                />
+
+                <Bar
+                    dataKey="Negative"
+                    stackId="sentiment"
+                    name="Negative"
+                    fill="#c62828"
                 />
             </BarChart>
         </ResponsiveContainer>

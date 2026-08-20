@@ -57,13 +57,13 @@ function NewsFilters({ filters, onChange, onClear }) {
                 }
             >
                 <option value="">All Importance</option>
-                <option value="Critical">Critical</option>
+                {/* <option value="Critical">Critical</option> */}
                 <option value="High">High</option>
                 <option value="Medium">Medium</option>
                 <option value="Low">Low</option>
             </select>
 
-            <select
+            {/* <select
                 value={filters.riskLevel}
                 onChange={(event) =>
                     updateFilter("riskLevel", event.target.value)
@@ -73,7 +73,7 @@ function NewsFilters({ filters, onChange, onClear }) {
                 <option value="High">High</option>
                 <option value="Medium">Medium</option>
                 <option value="Low">Low</option>
-            </select>
+            </select> */}
 
             <button type="button" onClick={onClear}>
                 Clear Filters

@@ -89,13 +89,13 @@ function NewsCard({ article }) {
                         </span>
                     )}
 
-                    {risk && (
+                    {/* {risk && (
                         <span
                             className={`badge badge-risk-${risk}`}
                         >
                             {formatLabel(risk)} Risk
                         </span>
-                    )}
+                    )} */}
                 </div>
             </div>
 

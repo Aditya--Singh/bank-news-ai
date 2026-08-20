@@ -65,12 +65,12 @@ def get_dashboard_summary(
 ):
     total_articles = db.query(func.count(News.id)).scalar()
 
-    sentiment = grouped_count(
+    sentiment_counts = grouped_count(
         db,
         NewsAIAnalysis.sentiment,
     )
 
-    importance = grouped_count(
+    importance_counts = grouped_count(
         db,
         NewsAIAnalysis.importance,
     )
@@ -80,14 +80,44 @@ def get_dashboard_summary(
         NewsAIAnalysis.risk_level,
     )
 
+    sentiment_importance_rows = (
+        db.query(
+            NewsAIAnalysis.importance,
+            NewsAIAnalysis.sentiment,
+            func.count(NewsAIAnalysis.id),
+        )
+        .filter(
+            NewsAIAnalysis.importance.isnot(None),
+            NewsAIAnalysis.sentiment.isnot(None),
+        )
+        .group_by(
+            NewsAIAnalysis.importance,
+            NewsAIAnalysis.sentiment,
+        )
+        .all()
+    )
+
+    sentiment_by_importance = {}
+
+    for importance, sentiment, count in sentiment_importance_rows:
+        if importance not in sentiment_by_importance:
+            sentiment_by_importance[importance] = {
+                "Positive": 0,
+                "Neutral": 0,
+                "Negative": 0,
+            }
+
+        sentiment_by_importance[importance][sentiment] = count
+
     return {
         "total_articles": total_articles or 0,
-        "sentiment": sentiment,
-        "importance": importance,
+        "sentiment": sentiment_counts,
+        "importance": importance_counts,
         "risk": risk,
         "top_banks": [],
         "top_organizations": [],
         "top_topics": [],
+        "sentiment_by_importance": sentiment_by_importance,
     }
 
 

@@ -17,6 +17,7 @@ import {
   DistributionBarChart,
   RankingBarChart,
   SentimentChart,
+  SentimentImportanceChart,
 } from "./components/DistributionChart";
 
 import NewsCard from "./components/NewsCard";
@@ -49,7 +50,7 @@ function App() {
     bank: "",
     sentiment: "",
     importance: "",
-    riskLevel: "",
+    // riskLevel: "",
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
@@ -64,7 +65,7 @@ function App() {
       bank: "",
       sentiment: "",
       importance: "",
-      riskLevel: "",
+      // riskLevel: "",
     });
     setCurrentPage(1);
   };
@@ -163,9 +164,14 @@ function App() {
     (summary?.importance?.Critical ?? 0) +
     (summary?.importance?.High ?? 0);
 
-  const highRisk =
-    summary?.risk?.high ??
-    summary?.risk?.High ??
+  // const highRisk =
+  //   summary?.risk?.high ??
+  //   summary?.risk?.High ??
+  //   0;
+
+  const positiveSentiment =
+    summary?.sentiment?.positive ??
+    summary?.sentiment?.Positive ??
     0;
 
   const negativeSentiment =
@@ -287,10 +293,16 @@ function App() {
                   subtitle="Requires attention"
                 />
 
-                <KpiCard
+                {/* <KpiCard
                   title="High Risk"
                   value={highRisk}
                   subtitle="Risk flagged"
+                /> */}
+
+                <KpiCard
+                  title="Positive Sentiment"
+                  value={positiveSentiment}
+                  subtitle="Positive developments"
                 />
 
                 <KpiCard
@@ -314,11 +326,12 @@ function App() {
                 </div>
 
                 <div className="panel chart-panel">
-                  <h2>Risk</h2>
-                  <DistributionBarChart
-                    data={summary?.risk}
+                  <h2>Sentiment by Importance</h2>
+                  <SentimentImportanceChart
+                    data={summary?.sentiment_by_importance}
                   />
                 </div>
+
               </section>
 
               <section className="ranking-grid">
