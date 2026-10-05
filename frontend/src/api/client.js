@@ -24,4 +24,18 @@ apiClient.interceptors.request.use(
     (error) => Promise.reject(error),
 );
 
+apiClient.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401) {
+            localStorage.removeItem("bankNewsUser");
+
+            // Notify the application that the session is no longer valid
+            window.dispatchEvent(new Event("auth-expired"));
+        }
+
+        return Promise.reject(error);
+    },
+);
+
 export default apiClient;

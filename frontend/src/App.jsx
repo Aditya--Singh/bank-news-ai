@@ -107,20 +107,31 @@ function App() {
           ]);
 
         setSummary(summaryData);
-        // setNews(newsData.articles);
         setTopBanks(banksData.items);
         setTopTopics(topicsData.items);
-
       } catch (err) {
-        console.error(err);
-        setError("Unable to load dashboard data.");
+        console.error("Dashboard loading failed:", err);
+
+        if (err.response?.status === 401) {
+          localStorage.removeItem("bankNewsUser");
+          setUser(null);
+          setSummary(null);
+          setTopBanks([]);
+          setTopTopics([]);
+        } else {
+          setError("Unable to load dashboard data.");
+        }
       } finally {
         setLoading(false);
       }
     };
 
-    loadDashboard();
-  }, []);
+    if (user?.accessToken) {
+      loadDashboard();
+    } else {
+      setLoading(false);
+    }
+  }, [user]);
 
   useEffect(() => {
     const loadNews = async () => {
@@ -142,11 +153,20 @@ function App() {
         });
       } catch (err) {
         console.error("News loading failed:", err);
+
+        if (err.response?.status === 401) {
+          localStorage.removeItem("bankNewsUser");
+          setUser(null);
+          setNews([]);
+          setTotalNews(0);
+        }
       }
     };
 
-    loadNews();
-  }, [currentPage, pageSize, filters]);
+    if (user?.accessToken) {
+      loadNews();
+    }
+  }, [user, currentPage, pageSize, filters]);
 
   if (!user) {
     return <Login onLogin={handleLogin} />;
